@@ -1,0 +1,23 @@
+{
+    "name": "coff/decision-tree",
+    "description": "Simple Decision Tree pattern based component",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Coff\\DecisionTree\\": "src/",
+            "Coff\\DecisionTree\\Test\\": "test/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Krzysztof Kubanek",
+            "email": "krzysztof.kubanek@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3.11"
+    }
+}
