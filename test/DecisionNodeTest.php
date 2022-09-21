@@ -5,6 +5,14 @@ namespace Coff\DecisionTree\Test;
 use Coff\DecisionTree\DecisionNode;
 use PHPUnit\Framework\TestCase;
 
+class A {
+    public $aValue;
+};
+
+class B {
+    public A $a;
+}
+
 class DecisionNodeTest extends TestCase
 {
     public function testAssertThrowsException(): void
@@ -75,5 +83,41 @@ class DecisionNodeTest extends TestCase
         });
 
         $this->assertEquals(false, $result);
+    }
+
+    public function testAssertWithExtractionCallback(): void
+    {
+
+        $node = new DecisionNode(
+            callback: fn (A $a) => $a->aValue,
+            extract: fn (B $b) => $b->a,
+        );
+
+        $b = new B;
+        $b->a = new A;
+        $b->a->aValue = 5;
+
+        $result = $node->assert($b);
+
+        $this->assertEquals(5, $result);
+    }
+
+    public function testAssertWithExtractionCallbackOnSubnode(): void
+    {
+
+        $node1 = new DecisionNode(
+            callback: fn (A $a) => $a->aValue,
+            extract: fn (B $b) => $b->a,
+        );
+
+        $node2 = new DecisionNode( fn(B $b) => $node1 );
+
+        $b = new B;
+        $b->a = new A;
+        $b->a->aValue = 5;
+
+        $result = $node2->assert($b);
+
+        $this->assertEquals(5, $result);
     }
 }
