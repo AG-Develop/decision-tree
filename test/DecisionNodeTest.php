@@ -13,6 +13,10 @@ class B {
     public A $a;
 }
 
+class ContextClass {
+    public int $contextValue;
+}
+
 class DecisionNodeTest extends TestCase
 {
     public function testAssertThrowsException(): void
@@ -119,5 +123,24 @@ class DecisionNodeTest extends TestCase
         $result = $node2->assert($b);
 
         $this->assertEquals(5, $result);
+    }
+
+    public function testAssertWithContextPassed(): void
+    {
+        $node2 = new DecisionNode(
+            callback: fn (object $obj, ContextClass $context) => $context->contextValue * 2,
+        );
+
+        $node1 = new DecisionNode(
+            callback: function (object $obj, ContextClass $context) use ($node2) {
+                $context->contextValue = 5;
+                return $node2;
+            },
+        );
+
+        $result = $node1->assert(new class {}, new ContextClass());
+
+        $this->assertEquals(10, $result);
+
     }
 }
